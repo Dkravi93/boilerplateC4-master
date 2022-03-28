@@ -1,3 +1,4 @@
+import axios from "axios";
 import { useState, useEffect } from "react";
 export const LoginSignUp = () => {
   const initialState = {
@@ -13,18 +14,42 @@ export const LoginSignUp = () => {
     image: '',
   }
 
-  const [user, setUser] = useState(initialState)
+  const [user, setUser] = useState(initialState);
 
   const handleChange = (e) => {
   
-      const {name, value, checked,type} = e.target;
+      let {name, value, checked,type} = e.target;
       value = (type === 'checkbox'? checked: value);
       setUser((p)=>({...p,[name]: value}))
   }
   const {username,password,city , technology , food ,movies ,culture, art, drama , image} = user;
+
+  const handleSubmit = (e) =>{
+    e.preventDefault();
+    localStorage.setItem('user',JSON.stringify(user));
+  }
+  const [log,setLog] = useState({
+    userName : '',
+    passWord : '',
+  })
+ const handle_login = (e) =>{
+    let {name, value} = e.target;
+    setLog((p)=>({
+      ...p, [name]: value
+    }))
+ }
+  const {userName,passWord} = log;
+ const handleLogin = (e) =>{
+
+      e.preventDefault();
+      const logger = JSON.parse(localStorage.getItem("user"));
+
+      (logger.username == userName && logger.password == passWord)?(alert("LoggedIn Sucessfully")): (alert("Invalid Credential"))
+ }
+
   return (
     <div className="loginSignUp">
-      <form className="signUp" onSubmit={(e) => { }}>
+      <form className="signUp" onSubmit={handleSubmit}>
         <h1>SignUp</h1>
         <label>name</label>
         <input
@@ -46,7 +71,7 @@ export const LoginSignUp = () => {
           required
         />
         <br />
-        <select value={city} className="location"name= "city" onChange={(event) => { handleChange}}>
+        <select value={city} className="location"name= "city" onChange={handleChange}>
           <option value=""></option>
           <option value="bangalore">Bangalore</option>
           <option value="kolkata">Kolkata</option>
@@ -74,7 +99,7 @@ export const LoginSignUp = () => {
         <input type="checkbox" className="culture" name="culture" checked = {culture} onChange={handleChange} />
         <br />
         <label>art</label>
-        <input type="checkbox" className="art" name="art" checked = {art} onChange={(event) => { handleChange}} />
+        <input type="checkbox" className="art" name="art" checked = {art} onChange={ handleChange} />
         <br />
         <label>drama</label>
         <input type="checkbox" className="drama" name="drama" checked = {drama} onChange={handleChange} />
@@ -91,25 +116,27 @@ export const LoginSignUp = () => {
         <br />
         <input type="submit" value ="Submit" className="submitSignUpForm" />
       </form>
-      <form className="login" onSubmit={(e) => { }}>
+      <form className="login" onSubmit={handleLogin}>
         <h1>Login</h1>
         <label>name</label>
         <input
           type="text"
           className="name"
-          onChange={(event) => { }}
+          name= "userName"
+          onChange={handle_login}
           required
         />
         <br />
         <label>password</label>
         <input
-          type="text"
+          type="passord"
           className="password"
-          onChange={(event) => { }}
+          name= "passWord"
+          onChange={handle_login}
           required
         />
         <br />
-        <input type="submit" className="submitLoginForm" />
+        <input type="submit" value="Submit" className="submitLoginForm" />
       </form>
     </div>
   );
